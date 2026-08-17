@@ -1,19 +1,14 @@
-# Makefile
 .PHONY: all test clean
 
 GNAT = gnatmake
 OBJ_DIR = obj
 BIN_DIR = bin
 
-all: $(BIN_DIR)/main $(BIN_DIR)/tests
-
-$(BIN_DIR)/main: main.adb error_diffusion.ads error_diffusion.adb
-	mkdir -p $(OBJ_DIR) $(BIN_DIR)
-	$(GNAT) -D $(OBJ_DIR) -o $(BIN_DIR)/main main.adb
+all: $(BIN_DIR)/tests
 
 $(BIN_DIR)/tests: tests.adb error_diffusion.ads error_diffusion.adb
 	mkdir -p $(OBJ_DIR) $(BIN_DIR)
-	$(GNAT) -D $(OBJ_DIR) -o $(BIN_DIR)/tests tests.adb
+	$(GNAT) -P error_diffusion.gpr
 
 test: $(BIN_DIR)/tests
 	@echo "Running tests..."
