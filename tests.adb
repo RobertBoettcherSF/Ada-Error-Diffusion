@@ -28,7 +28,7 @@ begin
 
    -- TEST 2 - Error Diffusion (Horizontal Propagation)
    Put_Line ("TEST 2 - Horizontal Diffusion (Floyd-Steinberg)");
-   Img_2x2 := ((100.0, 100.0), (100.0, 100.0));
+   Img_2x2 := (others => (others => 100.0));
    Apply_Diffusion (Img_2x2, Floyd_Steinberg_Kernel);
    Put_Line ("  2.1 Assert first pixel became 0.0");
    Assert (Img_2x2 (1,1) = 0.0, "Quantization failed");
@@ -91,7 +91,7 @@ begin
 
    -- TEST 9 - Bounds Enforcement / Clamping (Upper)
    Put_Line ("TEST 9 - Extreme Positive Error Clamping");
-   Img_2x2 := ((255.0, 255.0), (255.0, 255.0));
+   Img_2x2 := (others => (others => 255.0));
    -- Force an impossible state to test clamp function implicitly via algorithm
    -- Old_Pixel=255.0 -> New_Pixel=255.0. Error=0. Nothing goes out of bounds.
    -- Let's manually inject negative threshold behavior
@@ -102,7 +102,7 @@ begin
 
    -- TEST 10 - Bounds Enforcement / Clamping (Lower)
    Put_Line ("TEST 10 - Extreme Negative Error Clamping");
-   Img_2x2 := ((0.0, 0.0), (0.0, 0.0));
+   Img_2x2 := (others => (others => 0.0));
    Put_Line ("  10.1 Assert extreme lower bounds do not raise Constraint_Error");
    Apply_Diffusion (Img_2x2, Burkes_Kernel);
    Assert (Img_2x2(1,1) = 0.0, "Clamping failed lower bound");
@@ -119,7 +119,7 @@ begin
    -- TEST 12 - Error Carryover Mechanics
    Put_Line ("TEST 12 - Deep Error Carryover");
    declare
-      Img_3x1 : Image_Grid(1..3, 1..1) := ((127.0, 127.0, 127.0));
+      Img_3x1 : Image_Grid(1..3, 1..1) := (others => (others => 127.0));
    begin
       Apply_Diffusion (Img_3x1, Floyd_Steinberg_Kernel);
       Put_Line ("  12.1 Assert cascaded error pushes third pixel over threshold");
@@ -135,9 +135,7 @@ begin
    -- TEST 13 - Asymmetrical Negative Indices (Kernel properties)
    Put_Line ("TEST 13 - Negative Delta X Safety");
    declare
-      Img_3x3 : Image_Grid(1..3, 1..3) := ((100.0, 100.0, 100.0), 
-                                           (100.0, 100.0, 100.0), 
-                                           (100.0, 100.0, 100.0));
+      Img_3x3 : Image_Grid(1..3, 1..3) := (others => (others => 100.0));
    begin
       Put_Line ("  13.1 Assert backward X propagation works safely");
       Apply_Diffusion (Img_3x3, Jarvis_Judice_Ninke_Kernel);
